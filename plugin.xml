@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-crypter" version="1.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>crypter</name>
+    <author>Abay Zhuang</author>
+    <engines>
+        <engine name="cordova" version=">=3.0.0"/>
+    </engines>
+    <js-module name="crypter" src="www/crypter.js">
+        <clobbers target="cordova.plugins.crypter" />
+    </js-module>
+    <!-- Android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+              <feature name="crypter">
+				<param name="android-package" value="com.xmexe.exe.crypter.CrypterPlugin" />
+				<param name="onload" value="true" />
+			</feature>
+        </config-file>
+		<config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/*"></config-file>
+        <source-file src="src/android/CrypterPlugin.java" target-dir="src/com/xmexe/exe/crypter/" />
+        <source-file src="src/android/FileEnDecryptManager.java" target-dir="src/com/xmexe/exe/crypter/" />
+		<source-file src="src/android/Database.java" target-dir="src/com/xmexe/exe/crypter/" />
+        <source-file src="src/android/LogUtils.java" target-dir="src/com/xmexe/exe/crypter/" />
+    </platform>
+
+</plugin>
