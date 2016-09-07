@@ -1,7 +1,7 @@
 var exec = require('cordova/exec');
 
 var Crypter = {
-	encrypter: function(input_file, output_file, success, failure) {
+    encrypter: function(input_file, output_file, success, failure) {
         cordova.exec(
             success,
             failure,
@@ -10,7 +10,7 @@ var Crypter = {
             [input_file, output_file]
         );
     },
-	decrypter: function(input_file, output_file, success, failure) {
+    decrypter: function(input_file, output_file, success, failure) {
         cordova.exec(
             success,
             failure,
@@ -18,15 +18,34 @@ var Crypter = {
             'decrypt',
             [input_file, output_file]
         );
-    }
-	deleteFile: function(input_file, success, failure) {
+    },
+    encrypterDoc: function(input_file, output_file, success, failure) {
         cordova.exec(
             success,
             failure,
+            'crypter',
+            'encrypt_doc',
+            [input_file, output_file]
+        );
+    },
+    decrypterDoc: function(input_file, output_file, success, failure) {
+        cordova.exec(
+            success,
+            failure,
+            'crypter',
+            'decrypt_doc',
+            [input_file, output_file]
+        );
+    },
+
+    deleteFile: function(input_file, success, failure) {
+        cordova.exec(
+            success,
+            failure,
+            'crypter',
             'delete',
-            'decrypt',
             [input_file]
         );
-    }	
+    }
 };
 module.exports = Crypter;

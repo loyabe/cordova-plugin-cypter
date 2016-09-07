@@ -2,9 +2,6 @@
 package com.xmexe.exe.crypter;
 
 import android.content.Context;
-import android.os.Environment;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,7 +21,7 @@ import java.nio.channels.FileChannel;
  */
 public class FileEnDecryptManager {
 
-  private String key = "EXE"; // 加密解密key(Encrypt or decrypt key)
+  private String key = "EXEBayZhuang"; // 加密解密key(Encrypt or decrypt key)
   Database db;
   private FileEnDecryptManager() {
 
@@ -78,7 +75,7 @@ public class FileEnDecryptManager {
     return false;
   }
 
-  private final int REVERSE_LENGTH = 28; // 加解密长度(Encryption length)
+  private final int REVERSE_LENGTH = 56; // 加解密长度(Encryption length)
 
   /**
    * 加解密(Encrypt or deprypt method)
@@ -121,6 +118,84 @@ public class FileEnDecryptManager {
     }
     return false;
   }
+
+
+  /**
+   *
+   */
+  public void doEncryptDocument(String inputPath, String outputPath){
+    if (encrypt_document(inputPath, outputPath)){
+        LogUtils.d("encrypt document success");
+    }else {
+        LogUtils.d("encrypt document failure");
+    }
+  }
+
+  public void doDecryptDocument(String inputPath, String outputPath){
+    if (encrypt_document(inputPath, outputPath)){
+      LogUtils.d("decrypt document success");
+    }else {
+      LogUtils.d("decrypt document failure");
+    }
+  }
+
+  /**
+   * 加解密文档(Encrypt or deprypt method)
+   *
+   * @param inputPath 源文件绝对路径
+   * @param outputPath 输出文件绝对路径
+   * @return
+   */
+  private boolean encrypt_document(String inputPath, String outputPath) {
+    long len = REVERSE_LENGTH;
+    try {
+      File inputFile = new File(inputPath);
+      File outputFile = new File(outputPath);
+      if (inputFile.exists()) {
+
+        RandomAccessFile inputRaf = new RandomAccessFile(inputFile, "rw");
+        RandomAccessFile outputRaf = new RandomAccessFile(outputFile, "rw");
+        long totalLen = inputRaf.length();
+
+        //
+        len =  totalLen;
+
+        FileChannel inputChannel = inputRaf.getChannel();
+        MappedByteBuffer inputBuffer = inputChannel.map(
+                FileChannel.MapMode.READ_WRITE, 0, len);
+
+        FileChannel outputChannel = outputRaf.getChannel();
+        MappedByteBuffer outputBuffer = outputChannel.map(
+                FileChannel.MapMode.READ_WRITE, 0, len);
+
+        byte tmp;
+        for (int i = 0; i < len; ++i) {
+            byte rawByte = inputBuffer.get(i);
+            if (i <= key.length() - 1) {
+              tmp = (byte) (rawByte ^ key.charAt(i)); // 异或运算(XOR operation)
+            } else {
+              tmp = (byte) (rawByte ^ i);
+            }
+            outputBuffer.put(i, tmp);
+        }
+        inputBuffer.force();
+        inputBuffer.clear();
+        inputChannel.close();
+        inputRaf.close();
+
+        outputBuffer.force();
+        outputBuffer.clear();
+        outputChannel.close();
+        outputRaf.close();
+
+        return true;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
 
 
   /**
